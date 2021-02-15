@@ -61,12 +61,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
-          gh pr review release/${{ env.RELEASE_VERSION }} --approve
+          gh pr review release/${{ github.event.inputs.version }} --approve
       
       - name: Merge release -> master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr merge release/${{ env.RELEASE_VERSION }} --delete-branch --merge
+          gh pr merge release/${{ github.event.inputs.version }} --delete-branch --merge
       
       

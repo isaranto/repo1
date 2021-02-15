@@ -18,4 +18,42 @@ jobs:
           ref: master
       
       - name: Create release branch
-        run: git checkout -b release/${{ github.event.inputs.version }}
+        run: |
+          git checkout -b release/${{ github.event.inputs.version }}
+          echo "RELEASE_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      
+      - name: Commit new version
+        id: make-commit
+        run: |
+          yq -yi '.spec.image.tag |= "1.1.0"' config.yaml
+          git add config.yaml
+          git commit --message "Deploy release ${{ env.RELEASE_VERSION }}"
+          echo "::set-output name=commit::$(git rev-parse HEAD)"
+      
+      - name: Push new branch
+        run: git push origin release/${{ env.RELEASE_VERSION }}
+      
+      - name: Create pull request release -> master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nl=$'\n'
+          body="Hi @${{ github.actor }}! ${nl}This PR was created in response to a manual trigger of the release workflow here: \
+          https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}. ${nl} \
+          I've updated the tag in the config.yaml in this commit: ${{ steps.make-commit.outputs.commit }}. ${nl} \
+          Merging this PR will deploy stuff :) "
+          gh pr create --title "Release ${{ env.RELEASE_VERSION }} release -> master" --body "$body" --label release --base master --head release/${{ env.RELEASE_VERSION }}
+      
+      - name: Approve PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          gh pr review release/${{ env.RELEASE_VERSION }} --approve
+      
+      - name: Merge release -> master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge release/${{ env.RELEASE_VERSION }} --delete-branch --merge
+      
+      

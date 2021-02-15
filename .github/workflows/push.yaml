@@ -25,7 +25,7 @@ jobs:
       - name: Commit new version
         id: make-commit
         run: |
-          yq -yi '.spec.image.tag |= "1.1.0"' config.yaml
+          yq -yi '.spec.image.tag |= "${{ env.RELEASE_VERSION }}"' config.yaml
           git add config.yaml
           git commit --message "Deploy release ${{ env.RELEASE_VERSION }}"
           echo "::set-output name=commit::$(git rev-parse HEAD)"

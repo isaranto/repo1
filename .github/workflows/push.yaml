@@ -10,7 +10,6 @@ jobs:
     name: "Commit new tag"
     runs-on: ubuntu-latest
     steps:
-      - uses: chrisdickinson/setup-yq@latest
       - uses: actions/checkout@v2
         with:
           # Repository name with owner. For example, actions/checkout
@@ -25,6 +24,7 @@ jobs:
       
       - name: Commit new version
         run: |
+          brew install yq
           yq -yi '.spec.image.tag |= "${{ env.RELEASE_VERSION }}"' config.yaml
           git add config.yaml
           git commit --message "Deploy release ${{ env.RELEASE_VERSION }}"

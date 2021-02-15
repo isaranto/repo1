@@ -24,7 +24,7 @@ jobs:
       
       - name: Commit new version
         run: |
-          brew install yq
+          brew install python-yq
           yq -yi '.spec.image.tag |= "1.0.0"' config.yaml
           git add config.yaml
           git commit --message "Deploy release ${{ env.RELEASE_VERSION }}"

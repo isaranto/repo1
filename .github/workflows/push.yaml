@@ -22,8 +22,9 @@ jobs:
           git checkout -b release/${{ github.event.inputs.version }}
           echo "RELEASE_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
       
+      
+      - uses: chrisdickinson/setup-yq@latest
       - name: Commit new version
-        id: make-commit
         run: |
           yq -yi '.spec.image.tag |= "${{ env.RELEASE_VERSION }}"' config.yaml
           git add config.yaml

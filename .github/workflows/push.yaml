@@ -1,7 +1,21 @@
-on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
-  push:
-    branches:
-      - master
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'image tag'     
+        required: true
 
+jobs:
+  checkout-commit:
+    name: "Commit new tag"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'isaranto/repo2'
+          ref: master
+      
+      - name: Create release branch
+        run: git checkout -b release/${{ github.event.inputs.version }}

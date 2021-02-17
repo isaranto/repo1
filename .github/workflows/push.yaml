@@ -1,9 +1,4 @@
-on: 
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'image tag'     
-        required: true
+on: workflow_dispatch
 
 jobs:
   checkout-commit:

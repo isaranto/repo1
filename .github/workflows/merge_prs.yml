@@ -1,0 +1,42 @@
+name: "Merge pull requests"
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    types:
+      - opened
+      - labeled
+
+jobs:
+  merge-pull-requests:
+    name: "Create release branch + Bump Version"
+    if: ${{ github.event.label.name == 'gitflow' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Approve PR
+          env:
+            GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          run: |
+            gh pr review ${{ github.event.number }} --approve
+
+      - name: "Wait for status checks"
+          id: waitforstatuschecks
+          uses: "WyriHaximus/github-action-wait-for-status@v2"
+          with:
+            ignoreActions: merge-pull-requests
+            checkInterval: 60
+          env:
+            GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Merge release -> master
+        if: steps.waitforstatuschecks.outputs.status == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ github.event.number }} --delete-branch --merge
+
+

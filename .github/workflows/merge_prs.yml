@@ -18,19 +18,19 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Approve PR
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          run: |
-            gh pr review ${{ github.event.number }} --approve
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr review ${{ github.event.number }} --approve
 
       - name: "Wait for status checks"
-          id: waitforstatuschecks
-          uses: "WyriHaximus/github-action-wait-for-status@v2"
-          with:
-            ignoreActions: merge-pull-requests
-            checkInterval: 60
-          env:
-            GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        id: waitforstatuschecks
+        uses: "WyriHaximus/github-action-wait-for-status@v2"
+        with:
+          ignoreActions: merge-pull-requests
+          checkInterval: 60
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Merge release -> master
         if: steps.waitforstatuschecks.outputs.status == 'success'

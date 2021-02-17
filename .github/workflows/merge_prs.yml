@@ -11,7 +11,7 @@ on:
 
 jobs:
   merge-pull-requests:
-    name: "Create release branch + Bump Version"
+    name: Automerge
     if: ${{ github.event.label.name == 'gitflow' }}
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +27,7 @@ jobs:
         id: waitforstatuschecks
         uses: "WyriHaximus/github-action-wait-for-status@v1"
         with:
-          ignoreActions: merge-pull-requests
+          ignoreActions: Automerge
           checkInterval: 60
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

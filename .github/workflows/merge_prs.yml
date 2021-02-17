@@ -19,7 +19,7 @@ jobs:
 
       - name: Approve PR
           env:
-            GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
             gh pr review ${{ github.event.number }} --approve
 

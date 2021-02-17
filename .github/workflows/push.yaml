@@ -30,11 +30,15 @@ jobs:
 #           createPR: 'true'
 #           message: 'Update Image Version to ${{ github.event.inputs.version }}'
 #           token: ${{ secrets.BOT_TOKEN }} 
-      
+      - name: Bump version in package.json
+        run: |
+          yarn version --patch --no-git-tag-version
+          VERSION=$(jq -r .version package.json)
+          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+          
       - name: Create release branch
         run: |
-          git checkout -b release/${{ github.event.inputs.version }}
-          echo "RELEASE_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          git checkout -b release/${{ env.RELEASE_VERSION }}
       
       - name: Commit new version
         run: |
@@ -42,6 +46,13 @@ jobs:
           yq -yi '.spec.image.tag |= "1.0.0"' config.yaml
           git add config.yaml
           git commit --message "Deploy release ${{ env.RELEASE_VERSION }}"
+          echo "::set-output name=commit::$(git rev-parse HEAD)"
+      
+      - name: Commit changelog and manifest files
+        id: make-commit
+        run: |
+          git add package.json
+          git commit --message "Prepare release ${{ env.RELEASE_VERSION }}"
           echo "::set-output name=commit::$(git rev-parse HEAD)"
       
       - name: Push new branch

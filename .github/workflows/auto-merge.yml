@@ -12,7 +12,7 @@ on:
 jobs:
   approve:
     name: Approve and merge
-    if: startsWith(github.head_ref, "release" ) 
+    if: startsWith(github.head_ref, 'release' ) == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

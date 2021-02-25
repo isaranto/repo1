@@ -1,4 +1,4 @@
-name: Auto-merge staging RTDP
+name: Auto-merge
 
 on:
   pull_request:

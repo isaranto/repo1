@@ -34,4 +34,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr merge ${{ github.head_ref }} --delete-branch --merge --auto
+          gh pr merge ${{ github.head_ref }} --delete-branch --merge

@@ -3,7 +3,7 @@ name: Auto-merge
 on:
   pull_request:
     branches:
-      - 'release/**'
+      - 'master'
     paths:
       - 'apps/**'
     types:

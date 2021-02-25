@@ -1,7 +1,7 @@
 name: Auto-merge
 
 on:
-  pull_request_target:
+  pull_request:
     branches:
       - 'release/**'
     paths:
@@ -12,6 +12,7 @@ on:
 jobs:
   approve:
     name: Approve and merge
+    if: github.head_ref == 'release/**'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

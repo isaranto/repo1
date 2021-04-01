@@ -8,6 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.issue.pull_request }} && ${{ github.event.comment.body }} == 'deploy'
     steps:
+      - uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: "Check out this message!"
+          check_for_duplicate_msg: false  # OPTIONAL 
+          
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 

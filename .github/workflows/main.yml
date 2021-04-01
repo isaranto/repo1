@@ -18,7 +18,7 @@ jobs:
             $URL \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "http://www.google.com" }'
+            --data '{ "body": "${{ github.head_ref }} http://www.google.com" }'
           
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2

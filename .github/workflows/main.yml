@@ -8,12 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.issue.pull_request }} && ${{ github.event.comment.body }} == 'deploy'
     steps:
-      - uses: unsplash/comment-on-pr@master
+      - name: Add comment to PR
         env:
+          URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          msg: "Check out this message!"
-          check_for_duplicate_msg: false  # OPTIONAL 
+        run: |
+          curl \
+            -X POST \
+            $URL \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            --data '{ "body": "blah blah" }'
           
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2

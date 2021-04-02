@@ -43,12 +43,19 @@ jobs:
         with:
           ref: ${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
           fetch-depth: 0
+      
+      - name: Get git describe variant with branch name
+        env:
+          MY_REF: ${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
+        run: |
+          BRANCH=`echo ${MY_REF##*/}| cut -c1-40`
+          echo $BRANCH
+          PRE_RELEASE_VERSION=`echo "$(git describe)" | sed "s/-/-test-chart./"`
+          echo "RELEASE_VERSION=$PRE_RELEASE_VERSION" >> $GITHUB_ENV
 
       - name: Get git describe variant with branch name
         run: |
-          BRANCH=`echo ${GITHUB_REF##*/}| cut -c1-40`
-          echo $BRANCH
-          echo "$(git describe)"
+          echo "${{ env.RELEASE_VERSION }}"
           
 
       # Runs a single command using the runners shell

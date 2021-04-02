@@ -46,7 +46,7 @@ jobs:
       
       - name: Get git describe variant with branch name
         env:
-          MY_REF: ${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
+          MY_REF: ${{ fromJSON(steps.get-pr.outputs.result).head }}
         run: |
           BRANCH=`echo ${MY_REF##*/}| cut -c1-40`
           echo $BRANCH

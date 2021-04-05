@@ -13,7 +13,7 @@ jobs:
           URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=`echo "${{ github.head_ref }}"`
+          VERSION=$(git describe)
           curl \
             -X POST \
             $URL \

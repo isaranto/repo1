@@ -6,7 +6,7 @@ on: issue_comment
 jobs:
   test-action:
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.pull_request }} && ${{ github.event.comment.body }} == '/deploy'
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/deploy' }}
     steps:
       - uses: actions/checkout@v2
         with:

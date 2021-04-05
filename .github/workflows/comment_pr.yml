@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.issue.pull_request }} && ${{ github.event.comment.body }} == '/deploy'
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
       - name: Add comment to PR
         env:
           URL: ${{ github.event.issue.comments_url }}

@@ -26,10 +26,10 @@ jobs:
             -H "Authorization: token $GITHUB_TOKEN" \
             --data '{ "body": "'"Deploying Chart version: $VERSION http://www.google.com"'." }'
                 
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
-          fetch-depth: 0
+#       - uses: actions/checkout@v2
+#         with:
+#           ref: ${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
+#           fetch-depth: 0
       
 #       - name: Get git describe variant with branch name
 #         env:

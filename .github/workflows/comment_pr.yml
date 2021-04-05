@@ -18,83 +18,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(git describe)
+          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
           curl \
             -X POST \
             $URL \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
             --data '{ "body": "'"Deploying Chart version: $VERSION http://www.google.com"'." }'
-      
-      - name: Add comment to PR
-        env:
-          URL: ${{ github.event.issue.comments_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=`echo "${{ github.head_ref }}"`
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "/"$VERSION/" http://www.google.com" }'
-      
-      - name: Add comment to PR
-        env:
-          URL: ${{ github.event.issue.comments_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=`echo "${{ github.head_ref }}"`
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "$VERSION http://www.google.com" }'
-      
-      - name: Add comment to PR
-        env:
-          URL: ${{ github.event.issue.comments_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=`echo "${{ github.head_ref }}"`
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "/$VERSION http://www.google.com" }'
-            
-            
-      - uses: actions/github-script@v3
-        id: get-pr
-        with:
-          script: |
-            const request = {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            }
-            core.info(`Getting PR #${request.pull_number} from ${request.owner}/${request.repo}`)
-            try {
-              const result = await github.pulls.get(request)
-              return result.data
-            } catch (err) {
-              core.setFailed(`Request failed with error ${err}`)
-            }
-            
+                
       - uses: actions/checkout@v2
         with:
           ref: ${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
           fetch-depth: 0
       
-      - name: Get git describe variant with branch name
-        env:
-          MY_REF: ${{ fromJSON(steps.get-pr.outputs.result).head }}
-        run: |
-          BRANCH=`echo ${MY_REF##*/}| cut -c1-40`
-          echo $BRANCH
-          PRE_RELEASE_VERSION=`echo "$(git describe)" | sed "s/-/-test-chart./"`
-          echo "RELEASE_VERSION=$PRE_RELEASE_VERSION" >> $GITHUB_ENV
+#       - name: Get git describe variant with branch name
+#         env:
+#           MY_REF: ${{ fromJSON(steps.get-pr.outputs.result).head }}
+#         run: |
+#           BRANCH=`echo ${MY_REF##*/}| cut -c1-40`
+#           echo $BRANCH
+#           PRE_RELEASE_VERSION=`echo "$(git describe)" | sed "s/-/-test-chart./"`
+#           echo "RELEASE_VERSION=$PRE_RELEASE_VERSION" >> $GITHUB_ENV
 
       - name: Get git describe variant with branch name
         run: |
